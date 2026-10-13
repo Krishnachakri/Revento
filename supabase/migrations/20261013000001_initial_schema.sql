@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- 1. Profiles (Organizers & Resource Providers)
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.profiles (
-    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY,
     role TEXT NOT NULL CHECK (role IN ('organizer', 'provider', 'both')),
     full_name TEXT NOT NULL,
     company_name TEXT,
@@ -22,6 +22,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- In case profiles was created with auth.users foreign key constraint, drop it so seed providers can be inserted cleanly
+ALTER TABLE IF EXISTS public.profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
 
 -- Index for searching and filtering profiles
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);

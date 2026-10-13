@@ -1,7 +1,11 @@
 -- ============================================================================
 -- ReVento: Seed Data Migration (Development & Demo Only)
 -- All seed items are clearly flagged with is_seed = true
+-- Uses standard RFC-4122 hexadecimal UUID format [0-9a-f]
 -- ============================================================================
+
+-- Ensure profiles can accept seed data without requiring auth.users entries
+ALTER TABLE IF EXISTS public.profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
 
 -- 1. Insert Categories
 INSERT INTO public.categories (id, name, slug, description, icon, display_order)
@@ -16,14 +20,13 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Mock Provider Profiles for Development Seed
--- In Supabase auth, these can be linked or used in local/dev test databases
 INSERT INTO public.profiles (id, role, full_name, company_name, phone, city, address, bio, avatar_url)
 VALUES
-    ('p1111111-1111-1111-1111-111111111101', 'provider', 'Karan Mehta', 'Apex Pro Audio & Staging', '+91 98201 12345', 'Bengaluru', 'Indiranagar 100ft Road', 'Premier B2B sound reinforcement and concert staging provider since 2018.', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'),
-    ('p1111111-1111-1111-1111-111111111102', 'provider', 'Priya Sundaram', 'Lumina Event Tech', '+91 98450 54321', 'Bengaluru', 'Koramangala 4th Block', 'Specialized in intelligent concert lighting, architectural washes, and DMX systems.', 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80'),
-    ('p1111111-1111-1111-1111-111111111103', 'provider', 'Rajesh Verma', 'Optix Visual Displays', '+91 98110 67890', 'Mumbai', 'Andheri East MIDC', 'B2B rental house for indoor/outdoor LED video screens and presentation switchers.', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'),
-    ('p1111111-1111-1111-1111-111111111104', 'provider', 'Ananya Deshmukh', 'Sahara Stage & Power', '+91 99220 89123', 'Mumbai', 'Bandra Kurla Complex', 'Heavy-duty silent generators, mobile stages, and certified aluminum trussing.', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80'),
-    ('p1111111-1111-1111-1111-111111111105', 'provider', 'Vikram Singh', 'Metro Seating Solutions', '+91 98100 23456', 'Delhi', 'Connaught Place', 'High-capacity corporate conference seating, lounge packages, and staging accessories.', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80')
+    ('a1111111-1111-1111-1111-111111111101', 'provider', 'Karan Mehta', 'Apex Pro Audio & Staging', '+91 98201 12345', 'Bengaluru', 'Indiranagar 100ft Road', 'Premier B2B sound reinforcement and concert staging provider since 2018.', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'),
+    ('a1111111-1111-1111-1111-111111111102', 'provider', 'Priya Sundaram', 'Lumina Event Tech', '+91 98450 54321', 'Bengaluru', 'Koramangala 4th Block', 'Specialized in intelligent concert lighting, architectural washes, and DMX systems.', 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80'),
+    ('a1111111-1111-1111-1111-111111111103', 'provider', 'Rajesh Verma', 'Optix Visual Displays', '+91 98110 67890', 'Mumbai', 'Andheri East MIDC', 'B2B rental house for indoor/outdoor LED video screens and presentation switchers.', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'),
+    ('a1111111-1111-1111-1111-111111111104', 'provider', 'Ananya Deshmukh', 'Sahara Stage & Power', '+91 99220 89123', 'Mumbai', 'Bandra Kurla Complex', 'Heavy-duty silent generators, mobile stages, and certified aluminum trussing.', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80'),
+    ('a1111111-1111-1111-1111-111111111105', 'provider', 'Vikram Singh', 'Metro Seating Solutions', '+91 98100 23456', 'Delhi', 'Connaught Place', 'High-capacity corporate conference seating, lounge packages, and staging accessories.', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80')
 ON CONFLICT (id) DO NOTHING;
 
 -- 3. Seed Resources (Clearly marked with is_seed = true)
@@ -35,8 +38,8 @@ INSERT INTO public.resources (
 VALUES
     -- Sound & Audio (Bengaluru)
     (
-        'r1111111-1111-1111-1111-111111111101',
-        'p1111111-1111-1111-1111-111111111101',
+        'b1111111-1111-1111-1111-111111111101',
+        'a1111111-1111-1111-1111-111111111101',
         'c1111111-1111-1111-1111-111111111101',
         '[Demo] JBL VTX A8 Compact Line Array Module',
         'Dual 8-inch compact line array loudspeaker for high-impact corporate galas and music events. Flown or ground-stacked.',
@@ -48,8 +51,8 @@ VALUES
         true, true
     ),
     (
-        'r1111111-1111-1111-1111-111111111102',
-        'p1111111-1111-1111-1111-111111111101',
+        'b1111111-1111-1111-1111-111111111102',
+        'a1111111-1111-1111-1111-111111111101',
         'c1111111-1111-1111-1111-111111111101',
         '[Demo] Shure Axient Digital Wireless Mic System (Quad)',
         'Four-channel wireless receiver with handheld Beta58A capsules, rechargeable battery sleds, and antenna distro.',
@@ -62,8 +65,8 @@ VALUES
     ),
     -- Lighting & Visual (Bengaluru)
     (
-        'r1111111-1111-1111-1111-111111111103',
-        'p1111111-1111-1111-1111-111111111102',
+        'b1111111-1111-1111-1111-111111111103',
+        'a1111111-1111-1111-1111-111111111102',
         'c1111111-1111-1111-1111-111111111102',
         '[Demo] Robe Pointe 280W Beam/Spot Hybrid Fixture',
         'Very bright and super-fast moving head fixture with sharp parallel beam and zoom prism effects.',
@@ -75,8 +78,8 @@ VALUES
         true, true
     ),
     (
-        'r1111111-1111-1111-1111-111111111104',
-        'p1111111-1111-1111-1111-111111111102',
+        'b1111111-1111-1111-1111-111111111104',
+        'a1111111-1111-1111-1111-111111111102',
         'c1111111-1111-1111-1111-111111111102',
         '[Demo] Chauvet Professional WELL Fit Wireless Uplight',
         'Battery-powered RGBA LED uplight with built-in W-DMX wireless control and IP65 outdoor casing.',
@@ -89,8 +92,8 @@ VALUES
     ),
     -- LED Screens & Displays (Bengaluru / Mumbai)
     (
-        'r1111111-1111-1111-1111-111111111105',
-        'p1111111-1111-1111-1111-111111111103',
+        'b1111111-1111-1111-1111-111111111105',
+        'a1111111-1111-1111-1111-111111111103',
         'c1111111-1111-1111-1111-111111111103',
         '[Demo] Unilumin P2.6 Indoor Curved LED Video Panel (500x500mm)',
         'Ultra fine pitch rental LED display panel with 3840Hz refresh rate and magnetic front servicing.',
@@ -102,8 +105,8 @@ VALUES
         true, true
     ),
     (
-        'r1111111-1111-1111-1111-111111111106',
-        'p1111111-1111-1111-1111-111111111103',
+        'b1111111-1111-1111-1111-111111111106',
+        'a1111111-1111-1111-1111-111111111103',
         'c1111111-1111-1111-1111-111111111103',
         '[Demo] Barco ClickShare & Analog Way Seamless 4K Switcher Kit',
         'Broadcast-grade 4K60 video presentation switcher with redundant power and multi-screen preview.',
@@ -116,8 +119,8 @@ VALUES
     ),
     -- Staging & Trussing (Bengaluru / Mumbai)
     (
-        'r1111111-1111-1111-1111-111111111107',
-        'p1111111-1111-1111-1111-111111111104',
+        'b1111111-1111-1111-1111-111111111107',
+        'a1111111-1111-1111-1111-111111111104',
         'c1111111-1111-1111-1111-111111111104',
         '[Demo] Prolyte StageDex Modular Platform (2m x 1m) Deck',
         'Heavy-duty non-slip aluminum stage deck rated for 750 kg/m2 load. Includes telescopic legs (40-80cm).',
@@ -129,8 +132,8 @@ VALUES
         true, true
     ),
     (
-        'r1111111-1111-1111-1111-111111111108',
-        'p1111111-1111-1111-1111-111111111104',
+        'b1111111-1111-1111-1111-111111111108',
+        'a1111111-1111-1111-1111-111111111104',
         'c1111111-1111-1111-1111-111111111104',
         '[Demo] Global Truss F34 Square Aluminum Truss (3-Meter)',
         'TUV-certified 290mm square aluminum box truss with conical couplers and safety pins.',
@@ -143,8 +146,8 @@ VALUES
     ),
     -- Power & Generators (Bengaluru / Mumbai)
     (
-        'r1111111-1111-1111-1111-111111111109',
-        'p1111111-1111-1111-1111-111111111104',
+        'b1111111-1111-1111-1111-111111111109',
+        'a1111111-1111-1111-1111-111111111104',
         'c1111111-1111-1111-1111-111111111105',
         '[Demo] Cummins 125 kVA Acoustic Silent Diesel Generator',
         'Ultra-quiet sound attenuated diesel genset for sensitive audio/broadcast events. Includes 63A distro board.',
@@ -157,8 +160,8 @@ VALUES
     ),
     -- Seating & Furniture (Bengaluru / Delhi)
     (
-        'r1111111-1111-1111-1111-111111111110',
-        'p1111111-1111-1111-1111-111111111105',
+        'b1111111-1111-1111-1111-111111111110',
+        'a1111111-1111-1111-1111-111111111105',
         'c1111111-1111-1111-1111-111111111106',
         '[Demo] Ergonomic Executive Conference Banquet Chair',
         'Stackable premium cushioned chair in charcoal grey with brushed chrome frame for conferences and galas.',
